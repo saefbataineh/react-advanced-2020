@@ -1,4 +1,6 @@
 import React, { useState } from "react"
+import { v4 as uuidv4 } from "uuid"
+
 // JS
 // const input = document.getElementById('myText');
 // const inputValue = input.value
@@ -8,10 +10,20 @@ import React, { useState } from "react"
 const ControlledInputs = () => {
   const [firstName, setFirstName] = useState("")
   const [email, setEmail] = useState("")
-
+  const [people, setPeople] = useState([""])
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log(firstName, email)
+    if (firstName && email) {
+      const person = { firstName, email }
+      setPeople((people) => {
+        console.log("setPeople", people)
+        return [...people, person]
+      })
+      setEmail("")
+      setFirstName("")
+    } else {
+      alert("Field is empty")
+    }
   }
   return (
     <>
@@ -43,6 +55,15 @@ const ControlledInputs = () => {
           </button>
         </form>
       </article>
+      {people.map((item) => {
+        const { firstName, email } = item
+        return (
+          <div key={uuidv4()} className="item">
+            <h4>{firstName}</h4>
+            <p>{email}</p>
+          </div>
+        )
+      })}
     </>
   )
 }
