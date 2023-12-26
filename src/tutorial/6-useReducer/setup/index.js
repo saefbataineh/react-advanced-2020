@@ -1,39 +1,18 @@
 import React, { useState, useReducer, useEffect } from "react"
+import { reducer } from "./Reducer"
 import Modal from "./Modal"
-import { data } from "../../../data"
 import { v4 as uuidv4 } from "uuid"
 
 // reducer function
-const reducer = (state, action) => {
-  if (action.type === "ADD_ITEM") {
-    const newPeople = [...state.people, action.payload]
-    return {
-      ...state,
-      people: newPeople,
-      isModalOpen: true,
-      modalContent: "Item Added",
-    }
-  }
-  if (action.type === "NO_VALUE") {
-    return {
-      ...state,
-      isModalOpen: true,
-      modalContent: "Please Enter value",
-    }
-  }
-  throw new Error("no matching action type")
-}
 const Index = () => {
   const defaultState = {
+    id: uuidv4(),
     people: [],
     isModalOpen: false,
     modalContent: " ",
   }
+
   const [name, setName] = useState("")
-
-  // const [people, setPeople] = useState(data)
-  // const [showModal, setShowModal] = useState(false)
-
   const [state, dispatch] = useReducer(reducer, defaultState)
 
   const handleSubmit = (e) => {
@@ -46,10 +25,14 @@ const Index = () => {
       dispatch({ type: "NO_VALUE" })
     }
   }
-
+  const closeModal = () => {
+    dispatch({ type: "CLOSE_MODAL" })
+  }
   return (
     <>
-      {state.isModalOpen && <Modal modalContent={state.modalContent} />}
+      {state.isModalOpen && (
+        <Modal closeModal={closeModal} modalContent={state.modalContent} />
+      )}
       <form onSubmit={handleSubmit} className="form">
         <input
           type="text"
@@ -61,19 +44,18 @@ const Index = () => {
         </button>
       </form>
       {state.people.map((person) => {
+        // const { id } = person
         return (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              flexWrap: "nowrap",
-              justifyContent: "center",
-              alignItems: "baseline",
-            }}
-            key={uuidv4()}
-          >
-            <h4 style={{ marginRight: 15 }}>{person.name}</h4>
-            <span className="btn"> Remove</span>
+          <div className="item" key={uuidv4()}>
+            <h4>{person.name}</h4>
+            <button
+              className="btn"
+              onClick={() =>
+                dispatch({ type: "REMOVE_ITEM", payload: person.id })
+              }
+            >
+              Remove
+            </button>
           </div>
         )
       })}

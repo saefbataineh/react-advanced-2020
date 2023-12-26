@@ -21,9 +21,9 @@ const UseStateArray = () => {
   //
   const clearItem = (id) => {
     setPeople((oldPeople) => {
-      console.log(oldPeople)
+      // console.log(oldPeople)
       let newPeople = oldPeople.filter((person) => person.id !== id)
-      console.log(newPeople)
+      // console.log(newPeople)
       return newPeople
     })
   }
